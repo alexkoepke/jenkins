@@ -6,11 +6,11 @@ LABEL application=jenkins
 USER root
 
 # Used to set the docker group ID
-ARG TIMEZONE=America/Los_Angeles
+ARG TIMEZONE=America/New_York
 COPY src/build/ /build/
 
 # Install system requirements
-RUN echo "@community http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories && \
+RUN echo "@community http://dl-2.alpinelinux.org/alpine/edge/community/" >> /etc/apk/repositories && \
   	apk add --no-cache --virtual build-dependencies python-dev openssl-dev libffi-dev musl-dev git gcc tzdata && \
     apk add --no-cache --update py-pip make docker@community jq su-exec && \
     cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
@@ -18,6 +18,11 @@ RUN echo "@community http://nl.alpinelinux.org/alpine/edge/community/" >> /etc/a
     pip install --no-cache-dir -r /build/requirements.txt && \
     apk del build-dependencies && \
     rm -rf /build
+
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --no-cache add shadow && usermod -aG docker jenkins && \
+	usermod -aG users jenkins
+RUN echo "hello!!!"
 
 # Change to jenkins user
 USER jenkins

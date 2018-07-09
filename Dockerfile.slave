@@ -34,3 +34,9 @@ CMD ["sh","/usr/local/bin/slave.sh"]
 
 # Change to root so that we can set Docker GID on container startup
 USER root
+
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --no-cache add shadow && usermod -aG docker jenkins && \
+	usermod -a -G docker jenkins
+
+RUN echo "poop :)"
